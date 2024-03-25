@@ -1,0 +1,60 @@
+<h1>{{book.title}}</h1>
+{{#if authors}}
+<p>
+  Written by {{#each authors}}{{this.firstName}} {{this.lastName}}{{#unless @last}}, {{/unless}}{{/each}}
+</p>
+{{/if}}
+<p>
+  Originally published in {{book.publishingYear}}
+</p>
+{{#if genre}}
+<p>
+  genre: {{genre.genre}}
+</p>
+{{/if}}
+
+{{#if currentUser}}
+<div>
+  <form action="/books_users/upsert" role="form" method="post">
+    <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+    <input type="hidden" name="bookId" value="{{bookId}}">
+    <input type="hidden" name="userEmail" value="{{currentUser.email}}">
+    <label for="status">Status</label>
+    <select name="status" id="status">
+      {{#unless (and bookUser bookUser.status)}}
+      <option disabled selected value>-- select status --</option>
+      {{/unless}}
+      {{#each statuses}}
+      <option value="{{this}}" {{#if (and @root.bookUser (eq @root.bookUser.status this))}}selected{{/if}}>{{this}}
+      </option>
+      {{/each}}
+    </select>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+
+<div>
+  <form action="/comments/upsert" role="form" method="post">
+    <input type="hidden" name="_csrf" value="{{_csrfToken}}">
+    <input type="hidden" name="bookId" value="{{bookId}}">
+    <input type="hidden" name="userEmail" value="{{currentUser.email}}">
+    <label for="comment">
+      <h2>Comment</h2>
+    </label>
+    <textarea id="comment" name="comment"></textarea>
+    <br>
+    <button type="new_comment">New Comment</button>
+  </form>
+</div>
+{{#each comments}}
+<p>
+  {{this.text}}
+  <br>
+  By {{this.userEmail}}
+  <br>
+  <a href="/books/edit?id={{@index}}">Edit</a>
+</p>
+{{/each}}
+</div>
+{{/if}}
