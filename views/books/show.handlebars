@@ -32,7 +32,7 @@
     <button type="submit">Submit</button>
   </form>
 </div>
-
+{{/if}}
 
 <div>
   <form action="/comments/upsert" role="form" method="post">
@@ -40,21 +40,25 @@
     <input type="hidden" name="bookId" value="{{bookId}}">
     <input type="hidden" name="userEmail" value="{{currentUser.email}}">
     <label for="comment">
-      <h2>Comment</h2>
+      <h2>Comments</h2>
     </label>
-    <textarea id="comment" name="comment"></textarea>
+    {{#if currentUser}}
+    <textarea id="text" name="text"></textarea>
     <br>
     <button type="new_comment">New Comment</button>
+    {{/if}}
   </form>
 </div>
+
 {{#each comments}}
 <p>
   {{this.text}}
   <br>
   By {{this.userEmail}}
   <br>
-  <a href="/books/edit?id={{@index}}">Edit</a>
+  {{#if currentUser}}
+  <a href="/comments/edit?id={{@index}}">Edit </a>
+  {{/if}}
 </p>
 {{/each}}
 </div>
-{{/if}}
